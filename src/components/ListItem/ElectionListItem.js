@@ -1,20 +1,23 @@
 
 import Grid from '@mui/material/Grid';
-
-
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 export default function ElectionListItem() {
 
 
+    const navigate = useNavigate()
+
+
     return (
-        <>
-            <Grid container >
+        <Link style={{ textDecoration: 'none', color: 'inherit' }} to={'/elections/1'}>
+            <Grid container>
 
                 <Grid container item xs={12} md={4} lg={4} >
 
                     <Grid item container>
 
                         <Grid item xs={4} md={4} lg={4} style={{ padding: 0 }}>
-                            <p style={{ fontWeight: 'bold' }}>Election title</p>
+                            <p style={{ fontWeight: 'bold', color: '#004378'}}>Election title</p>
                         </Grid>
                         <Grid item xs={4} md={4} lg={4} style={{ marginTop: 1 }}>
                             <p style={{ fontSize: 15 }}>Election type</p>
@@ -44,7 +47,6 @@ export default function ElectionListItem() {
                 </Grid>
 
             </Grid>
-            <hr style={{ color: '#7B7B7B', borderWidth: 0.4 }}></hr>
-        </>
+        </Link>
     )
 }

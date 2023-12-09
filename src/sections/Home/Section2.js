@@ -2,8 +2,10 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container'
 import dvs_image2 from '../../assets/dvs_image2.png'
 import Button from '@mui/material/Button'
-
+import { useNavigate } from 'react-router-dom';
 export default function Section2(){
+
+    const navigate = useNavigate()
 
 
     return (
@@ -20,7 +22,7 @@ export default function Section2(){
 
                             <Grid item style={{ marginLeft: 40 }}>
                                 <p style={{ fontSize: 26 }}>Say goodbye to paper ballots and hello to secure, convenient, and accessible voting from anywhere. Checkout our recent elections </p>
-                                <Button style={{ width: 140, backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Recent elections</Button>
+                                <Button onClick={()=>navigate("/elections/")} size={'large'} style={{ width: 140, backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Recent elections</Button>
                             </Grid>
 
                         </Grid>

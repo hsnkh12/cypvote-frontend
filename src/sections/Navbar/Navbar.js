@@ -12,14 +12,15 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from 'react-router-dom';
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-export default function Navbar(){
+export default function Navbar() {
 
-    const [anchorElNav, setAnchorElNav] = React.useState(null);
+  const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -37,7 +38,7 @@ export default function Navbar(){
   };
 
   return (
-    <AppBar position="static" style={{backgroundColor:'#004378'}}>
+    <AppBar position="static" style={{ backgroundColor: '#004378' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
@@ -88,11 +89,18 @@ export default function Navbar(){
                 display: { xs: 'block', md: 'none' },
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={() => navigate("/")}>
+                <Typography textAlign="center" >Home</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("elections/")}>
+                <Typography textAlign="center" >Elections</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("candidates/")}>
+                <Typography textAlign="center">Candidates</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("privacy-policy/")}>
+                <Typography textAlign="center">Privacy policy</Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -115,21 +123,37 @@ export default function Navbar(){
             LOGO
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))}
+            <Button
+              onClick={() => navigate("/")}
+              sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none', fontSize: 17 }}
+            >
+              Home
+            </Button>
+            <Button
+              onClick={() => navigate("elections/")}
+              sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none', fontSize: 17 }}
+            >
+              Elections
+            </Button>
+            <Button
+              onClick={() => navigate("candidates/")}
+              sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none', fontSize: 17 }}
+
+            >
+              Candidates
+            </Button>
+            <Button
+              onClick={() => navigate("privacy-policy/")}
+              sx={{ my: 2, color: 'white', display: 'block', textTransform: 'none', fontSize: 17 }}
+            >
+              Privacy policy
+            </Button>
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Hassan" src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu
@@ -148,11 +172,15 @@ export default function Navbar(){
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
-              ))}
+              <MenuItem onClick={() => navigate("profile/")}>
+                <Typography textAlign="center">Profile</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("login/")}>
+                <Typography textAlign="center">Login</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("logout/")}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
           </Box>
         </Toolbar>

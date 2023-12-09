@@ -54,7 +54,7 @@ export default function Section4() {
                             </Grid>
 
                             <Grid item container xs={12} md={10} lg={10} alignItems={'start'}>
-                                <Button style={{ width: 100, backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Send</Button>
+                                <Button size={'large'} style={{ width: 100, backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Send</Button>
                             </Grid>
                         </Grid>
 
