@@ -22,7 +22,7 @@ export default function Section1(){
                                     <span style={{ fontWeight: 'bold' }}> CypVote</span>
                                 </p>
                                 <p style={{ fontSize: 18, color: '#D9D9D9' }}>Enhance transparency and revolutionize elections with our cutting-edge digital voting platform.</p>
-                                <Button onClick={()=>navigate('/register/')} size={'large'} style={{ width: 130, backgroundColor: 'white', color: '#024B86', textTransform: 'none' }}>Join us</Button>
+                                <Button onClick={()=>navigate('/auth/register/')} size={'large'} style={{ width: 130, backgroundColor: 'white', color: '#024B86', textTransform: 'none' }}>Join us</Button>
                             </Grid>
                         </Grid>
                         <Grid item xs={12} md={8} lg={8}>

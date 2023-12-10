@@ -18,7 +18,7 @@ export default function SearchCandidate() {
                             label="Search candidate"
                             type="text"
                             variant="outlined"
-                            style={{ backgroundColor: 'white' }}
+                            style={{ backgroundColor: 'white', borderRadius: 5 }}
                             fullWidth
                         />
 

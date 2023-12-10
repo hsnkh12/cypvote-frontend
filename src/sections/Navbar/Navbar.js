@@ -46,18 +46,17 @@ export default function Navbar() {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            onClick={()=>navigate('/')}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
               fontFamily: 'monospace',
               fontWeight: 700,
-              letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
             }}
           >
-            LOGO
+            CypVote 
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -172,14 +171,23 @@ export default function Navbar() {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={() => navigate("profile/")}>
+              <MenuItem onClick={() => navigate("/auth/profile/")}>
                 <Typography textAlign="center">Profile</Typography>
               </MenuItem>
-              <MenuItem onClick={() => navigate("login/")}>
+              <MenuItem onClick={() => navigate("/auth/login/")}>
                 <Typography textAlign="center">Login</Typography>
               </MenuItem>
-              <MenuItem onClick={() => navigate("logout/")}>
+              <MenuItem onClick={() => navigate("/auth/register/")}>
+                <Typography textAlign="center">Register</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/auth/logout/")}>
                 <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/auth/phone-number-verify")}>
+                <Typography textAlign="center">phone verify page (temp)</Typography>
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/auth/password-reset")}>
+                <Typography textAlign="center">Password reset page (temp)</Typography>
               </MenuItem>
             </Menu>
           </Box>

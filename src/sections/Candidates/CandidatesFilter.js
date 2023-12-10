@@ -10,14 +10,14 @@ export default function CandidatesFilter(){
     return (
         <Card style={{borderRadius: 10,border: '1px solid #E4E4E4', boxShadow: 'none'}}>
             <CardContent>
-                <Grid container style={{ padding: 10 }}>
+                <Grid container >
 
                     <Grid item xs={12} md={4} lg={4} m={1}>
                         <TextField
                             label="Search candidates"
                             type="text"
                             variant="outlined"
-                            style={{ backgroundColor: 'white' }}
+                            style={{ backgroundColor: 'white', borderRadius: 5 }}
                             fullWidth
                         />
 
@@ -41,7 +41,7 @@ export default function CandidatesFilter(){
 
                     </Grid>
                     <Grid item container xs={12} md={5} lg={5} m={1} justifyContent="end">
-                        <Button size={'large'} style={{ width: 120, height: '90%', backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Search</Button>
+                        <Button size={'large'} style={{ width: 120,  backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>Search</Button>
                     </Grid>
 
                 </Grid>

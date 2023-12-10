@@ -48,7 +48,7 @@ export default function ElectionDetail() {
 
                 <br></br>
 
-                <Card style={{ height: 400, overflow: 'auto' ,border: '1px solid #E4E4E4', boxShadow: 'none'}}>
+                <Card style={{ height: 700, overflow: 'auto' ,border: '1px solid #E4E4E4', boxShadow: 'none'}}>
 
                     <CardContent >
 
@@ -77,12 +77,6 @@ export default function ElectionDetail() {
                     </CardContent>
 
                 </Card>
-
-
-                <br></br>
-
-                <Pagination />
-
 
 
             </Container>

@@ -39,7 +39,7 @@ export default function ElectionInfo(props) {
                             </Grid>
 
                             <Grid item container >
-                                <span style={{ fontWeight: 'bold' }}>2 candidate allowed</span>
+                                <span style={{ fontWeight: 'bold' }}>2 candidate allowed per vote</span>
                             </Grid>
 
                         </Grid>

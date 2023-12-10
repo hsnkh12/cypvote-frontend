@@ -7,7 +7,7 @@ import CandidateBoxListItem from '../../components/ListItem/CandidateBoxListItem
 export default function CandidatesList() {
 
     return (
-        <Grid container gap={1}>
+        <Grid container spacing={2}>
 
             <CandidateBoxListItem />
             <CandidateBoxListItem />

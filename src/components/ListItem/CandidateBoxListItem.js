@@ -16,7 +16,7 @@ export default function CandidateBoxListItem() {
             <Card style={{borderRadius: 10,border: '1px solid #E4E4E4', boxShadow: 'none'}}>
 
                 <CardContent>
-                    <Grid container gap={2}>
+                    <Grid container gap={2} mb={1} mt={1}>
 
                         <Grid item container justifyContent={'center'}>
                             <div style={{ backgroundColor: 'gray', borderRadius: '50%', width: '150px', height: '150px' }}>
