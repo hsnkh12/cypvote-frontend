@@ -2,9 +2,44 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField';
-
+import { useAuth } from '../../../contexts/auth';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import NotificationMessage from '../../../components/Notification/NotificationMessage';
 
 export default function PhoneNumber(){
+
+    const {verifySMSCode, signOut} = useAuth()
+
+    const [ notify, setNotify] = useState({ message: null, status: null})
+
+
+    const [formValues, setFormValues] = useState({
+        code : null
+    })
+
+    const handleFormValueChange = (e) => {
+
+        const value = e.target.value
+
+        const prevFormValues = {...formValues}
+
+        prevFormValues[e.target.name] = value 
+
+        setFormValues(prevFormValues)
+    }
+
+
+    const handleFormSubmit = async (e) => {
+
+        try{
+        e.preventDefault()
+        await verifySMSCode(formValues.code)
+        } catch(err){
+            const message = err.response.data.message? err.response.data.message: "Server error"
+            setNotify({message: message, status: 'error'})
+        }
+    }
 
 
     return (
@@ -14,7 +49,7 @@ export default function PhoneNumber(){
                 <Grid container justifyContent={'center'}>
                     <Grid item xs={12} sm={5} md={5}>
 
-                        <form>
+                        <form onSubmit={handleFormSubmit}>
 
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -27,11 +62,20 @@ export default function PhoneNumber(){
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        name= {'code'}
+                                        value = {formValues.code}
+                                        required
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
+                                <NotificationMessage
+                                    status={notify.status}
+                                    message= {notify.message}
+                                    setNotify={setNotify}
+                                />
                                 <Grid item xs={12} mt={2}>
-                                    <Button size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginRight: 5}}>Verify</Button>
-                                    <Button size={'large'} style={{ backgroundColor: '#1B638E', width: 150, color: 'white', textTransform: 'none' }}>Resend</Button>
+                                    <Button type={'submit'}  size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginRight: 5}}>Verify</Button>
+                                    <Button onClick={signOut} size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginRight: 5}}>Resend</Button>
                                 </Grid>
                             </Grid>
 

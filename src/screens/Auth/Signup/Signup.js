@@ -2,18 +2,58 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField';
+import { useAuth } from '../../../contexts/auth';
+import { useState } from 'react';
+import NotificationMessage from '../../../components/Notification/NotificationMessage';
 
 
 export default function Signup() {
 
+
+    const { registerUser} = useAuth()
+
+    const [ notify, setNotify] = useState({ message: null, status: null})
+
+
+    const [formValues, setFormValues] = useState({
+        username: null,
+        email: null,
+        first_name: null,
+        last_name: null,
+        phone_number: null,
+        password: null
+    })
+
+    const handleFormValueChange = (e) => {
+
+        const value = e.target.value
+
+        const prevFormValues = {...formValues}
+
+        prevFormValues[e.target.name] = value 
+
+        setFormValues(prevFormValues)
+    }
+
+    const handleFormSubmit = async (e) => {
+
+        try{
+        e.preventDefault()
+        await registerUser(formValues)
+        } catch(err){
+            const message = err.response.data.message? err.response.data.message: "Server error"
+            setNotify({message: message, status: 'error'})
+        }
+    }
+
     return (
         <div style={{ backgroundColor: '#004378' }} >
-            <Container style={{ paddingTop: 50, height: '85vh' }}>
+            <Container style={{ paddingTop: 50 }}>
 
                 <Grid container justifyContent={'center'}>
                     <Grid item xs={12} sm={5} md={5}>
 
-                        <form>
+                        <form onSubmit={handleFormSubmit}>
 
                             <Grid container spacing={2}>
                                 <Grid item xs={12}>
@@ -26,6 +66,9 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'username'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -35,6 +78,9 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'email'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -43,6 +89,9 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'first_name'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -51,6 +100,9 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'last_name'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -59,6 +111,9 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'phone_number'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
                                 <Grid item xs={12}>
@@ -68,10 +123,18 @@ export default function Signup() {
                                         variant="outlined"
                                         style={{ backgroundColor: 'white', borderRadius: 5 }}
                                         fullWidth
+                                        required
+                                        name={'password'}
+                                        onChange={handleFormValueChange}
                                     />
                                 </Grid>
+                                <NotificationMessage
+                                    status={notify.status}
+                                    message= {notify.message}
+                                    setNotify={setNotify}
+                                />
                                 <Grid item xs={12} mt={2}>
-                                    <Button size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none' }}>Submit</Button>
+                                    <Button type={'submit'} size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginBottom: 30 }}>Submit</Button>
                                 </Grid>
                             </Grid>
 
