@@ -2,8 +2,64 @@ import Container from '@mui/material/Container'
 import Pagination from '../../components/Pagination/Pagination';
 import ElectionFilter from '../../sections/Elections/ElectionFilter';
 import ElectionsList from '../../sections/Elections/ElectionsList';
+import { useEffect, useState } from 'react';
+import axios from 'axios'
+import { useNavigate } from "react-router-dom";
 
 export default function Elections() {
+
+    const navigate = useNavigate()
+    const [elections, setElections] = useState([])
+
+    const [queryParams, setQueryParams] = useState({
+        filter: {
+            status: 'S'
+        },
+        pagination: {
+            page: 1
+        }
+    })
+
+
+    const fetchElections = async () => {
+
+        try{
+
+            const token = localStorage.getItem('token')
+            const response = await axios.get("http://localhost:8080/elections", {
+                params: {...queryParams.filter, ...queryParams.pagination},
+                headers: {
+                    Authorization: 'Bearer '+token
+                }
+            })
+            setElections(response.data)
+
+        } catch(err){
+
+            if(err.response.status === 403){
+                navigate('/auth/login')
+            }
+            console.log(err)
+        }
+
+    }
+
+
+    const setQueryFilter = (filter) => {
+        const prevQ = {...queryParams}
+        prevQ.filter = filter 
+        setQueryParams(prevQ)
+    }
+
+    const setQueryPagination = (pagination) => {
+        const prevQ = {...queryParams}
+        prevQ.pagination = pagination
+        setQueryParams(prevQ)
+    }
+
+    useEffect(() => {
+        fetchElections()
+    }, [queryParams])
 
     return (
         <div style={{ backgroundColor: '#EEF7FF' }}>
@@ -13,15 +69,23 @@ export default function Elections() {
                 <br></br>
                 <br></br>
 
-                <ElectionFilter /> 
+                <ElectionFilter 
+                filter = {queryParams.filter}
+                setQueryFilter = {setQueryFilter}
+                /> 
 
                 <br></br>
 
-                <ElectionsList /> 
+                <ElectionsList 
+                elections = {elections}
+                /> 
 
                 <br></br>
 
-                <Pagination /> 
+                <Pagination 
+                    pagination = {queryParams.pagination}
+                    setQueryPagination = {setQueryPagination} 
+                /> 
 
 
             </Container>
