@@ -4,15 +4,22 @@ import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button'
 import CandidateBoxListItem from '../../components/ListItem/CandidateBoxListItem';
 
-export default function CandidatesList() {
+export default function CandidatesList(props) {
+
+    const {
+        candidates
+    } = props
 
     return (
         <Grid container spacing={2}>
+            {candidates.map((cand) => {
 
-            <CandidateBoxListItem />
-            <CandidateBoxListItem />
-            <CandidateBoxListItem />
-            <CandidateBoxListItem />
+                return (
+                    <CandidateBoxListItem
+                        candidate={cand}
+                    />
+                )
+            })}
         </Grid>
     )
 }

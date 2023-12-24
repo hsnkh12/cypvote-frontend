@@ -5,14 +5,15 @@ import TextField from '@mui/material/TextField';
 import { useAuth } from '../../../contexts/auth';
 import { useState } from 'react';
 import NotificationMessage from '../../../components/Notification/NotificationMessage';
-
-
+import { useSearchParams , useNavigate} from 'react-router-dom';
 export default function Signup() {
 
 
     const { registerUser} = useAuth()
-
+    const navigate = useNavigate()
     const [ notify, setNotify] = useState({ message: null, status: null})
+    const [searchParams, _] = useSearchParams()
+    const redirectUrl = searchParams.get('redirect')? searchParams.get('redirect'): "/elections/"
 
 
     const [formValues, setFormValues] = useState({
@@ -39,7 +40,7 @@ export default function Signup() {
 
         try{
         e.preventDefault()
-        await registerUser(formValues)
+        await registerUser(formValues, redirectUrl)
         } catch(err){
             const message = err.response.data.message? err.response.data.message: "Server error"
             setNotify({message: message, status: 'error'})
@@ -134,6 +135,9 @@ export default function Signup() {
                                     setNotify={setNotify}
                                 />
                                 <Grid item xs={12} mt={2}>
+                                <Grid item xs={12} mt={2}>
+                                    <Button style={{ color: 'white', textDecoration: 'underline' }} onClick={ () => navigate("/auth/login/")}>Already have an account?</Button>
+                                </Grid>
                                     <Button type={'submit'} size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginBottom: 30 }}>Submit</Button>
                                 </Grid>
                             </Grid>

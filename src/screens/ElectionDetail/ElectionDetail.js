@@ -9,39 +9,83 @@ import ElectionInfo from '../../sections/Elections/ElectionInfo'
 import SearchCandidate from '../../sections/Elections/SearchCandidate'
 import CandidateListItem from '../../components/ListItem/CandidateListItem'
 import { Radio, RadioGroup, FormControl, FormControlLabel } from '@mui/material';
-import { useEffect, useState } from 'react'
+import { useCallback, useContext, useEffect, useState } from 'react'
 import SubmitVoteModal from '../../components/Modal/SubmitVoteModal'
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
+import CandidatesList from '../../sections/Elections/CandidatesList'
+import UserVoted from '../../sections/Elections/UserVoted'
+import { AuthContext } from '../../contexts/auth'
+
 
 export default function ElectionDetail(props) {
 
 
-    const [openModal, setOpenModal]= useState(false);
+    const {setPageNotify} = props
+    const [openModal, setOpenModal] = useState(false);
+    const [userVoted, setUserVoted] = useState(false)
     const navigate = useNavigate()
-    const [election, setElection] = useState({})
+    const [election, setElection] = useState(null)
     const { election_id } = useParams();
+ 
+    const [selectedCandidates, setSelectedCandidates] = useState([
+    ])
 
-    const fetchElection = async () => {
+    const checkUserVote = async () => {
 
-        try{
+        try {
+
             const token = localStorage.getItem('token')
-            const response = await axios.get("http://localhost:8080/elections"+election_id, {
+            const response = await axios.get("http://localhost:8081/votes/check-user-vote/" + election_id, {
                 headers: {
-                    Authorization: 'Bearer '+token
+                    Authorization: 'Bearer ' + token
                 }
             })
-            console.log(response.data)
-            setElection(response.data)
+            setUserVoted(response.data)
 
-        } catch (err){
-            if(err.response.status === 403){
-                navigate('/auth/login')
+
+        } catch (err) {
+            if (err.response.status === 403) {
+                setPageNotify({message: 'Session has been expired', status:'warning'})
+                navigate('/auth/login/?redirect=/elections/' + election_id + "/")
+            } else if (err.response.status === 404) {
+                navigate("/404")
             }
             console.log(err)
         }
     }
+
+    const fetchElection = async () => {
+
+        try {
+            const token = localStorage.getItem('token')
+            const response = await axios.get("http://localhost:8080/elections/" + election_id, {
+                headers: {
+                    Authorization: 'Bearer ' + token
+                }
+            })
+            if (response.data.status === 'P'){
+                navigate('/404')
+                return
+            } 
+            setElection(response.data)
+
+        } catch (err) {
+            if (err.response.status === 403) {
+                if(localStorage.getItem('token')){
+                    setPageNotify({message: 'Session has been expired', status:'warning'})
+                    }
+                navigate('/auth/login/?redirect=/elections/' + election_id + "/")
+            } else if (err.response.status === 404) {
+                navigate("/404")
+            }
+            console.log(err)
+        }
+    }
+
+    const [queryParams, setQueryParams] = useState({
+    })
 
     const handleOpenModal = () => {
         setOpenModal(true);
@@ -52,7 +96,7 @@ export default function ElectionDetail(props) {
     };
 
     useEffect(() => {
-
+        checkUserVote()
         fetchElection()
     }, [])
 
@@ -61,53 +105,52 @@ export default function ElectionDetail(props) {
 
             <Container >
 
-                <SubmitVoteModal 
-                    openModal = {openModal}
-                    handleCloseModal = {handleCloseModal}
+                <SubmitVoteModal
+                    openModal={openModal}
+                    handleCloseModal={handleCloseModal}
+                    selectedCandidates={selectedCandidates}
+                    election_id={election_id}
+                    setUserVoted ={setUserVoted}
                 />
 
                 <br></br>
                 <br></br>
 
-                <ElectionInfo 
-                    handleOpenModal = {handleOpenModal} 
-                />
+                {election?
+                    <><ElectionInfo
+                        handleOpenModal={handleOpenModal}
+                        election={election}
+                        selected={selectedCandidates.length}
+                        userVoted = {userVoted}
+                    />
 
-                <br></br>
+                        <br></br>
+                        {!userVoted && election.status !== 'E'?
+                            <>
+                                <SearchCandidate
 
-                <SearchCandidate />
-
-                <br></br>
-
-                <Card style={{ height: 700, overflow: 'auto' ,border: '1px solid #E4E4E4', boxShadow: 'none'}}>
-
-                    <CardContent >
-
-                        <Container>
-
-                            <RadioGroup
-                                aria-label="gender"
-                                name="gender"
-                            >
-
-                                <CandidateListItem
-                                    formControlElement={<FormControlLabel value="1" control={<Radio size='large' />} />}
-                                />
-                                <CandidateListItem
-                                    formControlElement={<FormControlLabel value="2" control={<Radio size='large' />} />}
-                                />
-                                <CandidateListItem
-                                    formControlElement={<FormControlLabel value="3" control={<Radio size='large' />} />}
-                                />
-                                <CandidateListItem
-                                    formControlElement={<FormControlLabel value="4" control={<Radio size='large' />} />}
+                                    queryParams={queryParams}
+                                    setQueryParams={setQueryParams}
+                                    selected={selectedCandidates.length}
                                 />
 
-                            </RadioGroup>
-                        </Container>
-                    </CardContent>
+                                <br></br>
 
-                </Card>
+
+                                <CandidatesList
+                                    election_id={election_id}
+                                    queryParams={queryParams}
+                                    selectedCandidates={selectedCandidates}
+                                    setSelectedCandidates={setSelectedCandidates}
+                                    no_of_votes_allowed_per_user={election.no_of_votes_allowed_per_user}
+                                /></>
+                            : <UserVoted 
+                                eleciton_id = {election_id} 
+                                userVoted = {userVoted}
+                                />}
+
+
+                    </> : null}
 
 
             </Container>

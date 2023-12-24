@@ -2,14 +2,17 @@ import Container from '@mui/material/Container'
 import Pagination from '../../components/Pagination/Pagination';
 import ElectionFilter from '../../sections/Elections/ElectionFilter';
 import ElectionsList from '../../sections/Elections/ElectionsList';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios'
 import { useNavigate } from "react-router-dom";
+import { AuthContext, AuthProvider } from '../../contexts/auth';
 
-export default function Elections() {
+export default function Elections(props) {
 
+    const {setPageNotify} = props
     const navigate = useNavigate()
-    const [elections, setElections] = useState([])
+    const [elections, setElections] = useState([]) 
+
 
     const [queryParams, setQueryParams] = useState({
         filter: {
@@ -37,7 +40,10 @@ export default function Elections() {
         } catch(err){
 
             if(err.response.status === 403){
-                navigate('/auth/login')
+                if(localStorage.getItem('token')){
+                setPageNotify({message: 'Session has been expired', status:'warning'})
+                }
+                navigate('/auth/login/?redirect=/elections/')
             }
             console.log(err)
         }

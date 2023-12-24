@@ -40,7 +40,7 @@ const useAuth = () => {
   const [error, setError] = useState(null); const navigate = useNavigate()
   const { setUser } = useContext(AuthContext);
 
-  const registerUser = async (registerInfo) => {
+  const registerUser = async (registerInfo, redirectUrl) => {
 
     const response = await axios.post("http://localhost:8080/users/signup", registerInfo)
 
@@ -48,10 +48,10 @@ const useAuth = () => {
 
     localStorage.setItem('user_id', user_id);
     localStorage.setItem('phone_number', phone_number)
-    navigate('/auth/phone-number-verify');
+    navigate('/auth/phone-number-verify?redirect='+redirectUrl);
   }
 
-  const authenticateUser = async (loginInfo) => {
+  const authenticateUser = async (loginInfo, redirectUrl) => {
     // setLoading(true);
     // setError(null);
 
@@ -62,15 +62,32 @@ const useAuth = () => {
 
     localStorage.setItem('user_id', user_id);
     localStorage.setItem('phone_number', phone_number)
-    navigate('/auth/phone-number-verify');
+   
+    navigate('/auth/phone-number-verify/?redirect='+redirectUrl);
 
 
   };
 
 
-  const verifySMSCode = async (code) => {
+  const verifySMSCode = async (code, redirectUrl, new_phone_number=null, setPageNotify) => {
 
 
+    if(new_phone_number){
+
+      const token = localStorage.getItem('token')
+
+      await axios.post("http://localhost:8080/users/change-phone-number",{
+        new_phone_number,
+        code
+      }, {
+        headers: {
+          Authorization: 'Bearer '+token
+        }
+      })
+      setPageNotify({message:'Phone number has been updated', status: 'success'})
+      navigate(redirectUrl)
+      return 
+    }
 
     const user_id = localStorage.getItem('user_id')
     const phone_number = localStorage.getItem('phone_number')
@@ -95,7 +112,8 @@ const useAuth = () => {
 
     localStorage.removeItem('phone_number')
 
-    navigate('/')
+    setPageNotify({message:'You are logged in to the system', status: 'success'})
+    navigate(redirectUrl)
 
 
   }

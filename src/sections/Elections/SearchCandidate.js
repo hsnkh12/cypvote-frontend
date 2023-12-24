@@ -4,7 +4,14 @@ import Grid from '@mui/material/Grid'
 import TextField from '@mui/material/TextField';
 
 
-export default function SearchCandidate() {
+export default function SearchCandidate(props) {
+
+
+    const {
+        queryParams,
+        setQueryParams,
+        selected
+    } = props 
 
 
     return (
@@ -20,13 +27,24 @@ export default function SearchCandidate() {
                             variant="outlined"
                             style={{ backgroundColor: 'white', borderRadius: 5 }}
                             fullWidth
+                            value = {queryParams.candidate_name}
+                            onChange={(e) => {
+
+                                const prev = {...queryParams}
+                                if (e.target.value === ""){
+                                    delete prev.candidate_name
+                                } else {
+                                    prev.candidate_name = e.target.value
+                                }
+                                setQueryParams(prev)
+                        }}
                         />
 
                     </Grid>
 
                     <Grid item container xs={12} md={8} lg={8} alignItems={'center'} justifyContent={'end'}>
 
-                        <p style={{ fontWeight: 'bold' }}>2 selected</p>
+                        <p style={{ fontWeight: 'bold' }}>{selected} selected</p>
 
                     </Grid>
                 </Grid>

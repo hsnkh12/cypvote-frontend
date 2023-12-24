@@ -4,10 +4,129 @@ import CardContent from '@mui/material/CardContent';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CardActions from '@mui/material/CardActions'
+import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import NotificationMessage from '../../../components/Notification/NotificationMessage';
 
-export default function Profile() {
+export default function Profile(props) {
+
+    const {setPageNotify} = props
+    const navigate = useNavigate()
+    const [formValues, setFormValues] = useState(null)
+    const [ notify, setNotify] = useState({ message: null, status: null})
+
+
+    const fetchUser = async () => {
+        try{
+
+            const token = localStorage.getItem('token')
+
+            const res = await axios.get("http://localhost:8080/users/user/profile",
+            {
+                headers:{
+                    Authorization: 'Bearer '+token
+                }
+            })
+
+            setFormValues(res.data)
+
+        } catch(err){
+            if (err.response.status === 403) {
+                if(localStorage.getItem('token')){
+                    setPageNotify({message: 'Session has been expired', status:'warning'})
+                    }
+                navigate('/auth/login/?redirect=/auth/profile/')
+            } else if (err.response.status === 404) {
+                navigate("/404")
+            }
+            const message = err.response.data.message? err.response.data.message: "Server error"
+            setNotify({message: message, status: 'error'})
+            console.log(err)
+        }
+    }
+
+    const updateUser = async (update) => {
+
+        try{
+            const token = localStorage.getItem('token')
+
+            await axios.put("http://localhost:8080/users/"+formValues.user_id,{
+                ...update
+            },{
+                headers: {
+                    Authorization: 'Bearer '+token
+                }
+            })
+
+            setNotify({message: 'User information has been updated', status: 'success'})
+
+        }catch(err){
+            if (err.response.status === 403) {
+                if(localStorage.getItem('token')){
+                    setPageNotify({message: 'Session has been expired', status:'warning'})
+                    }
+                navigate('/auth/login/?redirect=/auth/profile/')
+            } 
+            const message = err.response.data.message? err.response.data.message: "Server error"
+            setNotify({message: message, status: 'error'})
+        }
+    }
+
+    const udpatePhoneNumber = async (new_phone_number) => {
+
+        try{
+
+            const token = localStorage.getItem('token')
+
+            await axios.post('http://localhost:8080/users/change-phone-number/request',{
+                new_phone_number 
+            },{
+                headers: {
+                    Authorization: 'Bearer '+token
+                }
+            })
+
+            navigate('/auth/phone-number-verify/?redirect=/auth/profile/&new_phone_number='+new_phone_number)
+            
+        } catch(err){
+            if (err.response.status === 403) {
+                if(localStorage.getItem('token')){
+                    setPageNotify({message: 'Session has been expired', status:'warning'})
+                    }
+                navigate('/auth/login/?redirect=/auth/profile/')
+            } 
+            const message = err.response.data.message? err.response.data.message: "Server error"
+            setNotify({message: message, status: 'error'}) 
+        }
+    }
+
+    const handleFormChange = (e) => {
+        const value = e.target.value 
+        const prev = {...formValues}
+
+        prev[e.target.name] = value 
+        setFormValues(prev)
+
+    }
+
+    const handleValueUpdate = (name) => {
+        if(name === 'phone_number'){
+            udpatePhoneNumber(formValues[name])
+            return
+        }
+        updateUser({[name]:formValues[name]})
+        // send request 
+    }
+
+    useEffect(()=>{
+        fetchUser()
+    }, [])
+
+    if(!formValues){
+        return 
+    }
 
     return (
 
@@ -29,11 +148,11 @@ export default function Profile() {
                                 {/* Form Fields */}
                                 <Grid item container xs={12} md={12} lg={12} spacing={2}>
                                     {[
-                                        { label: 'Username', value: 'Hassankh' },
-                                        { label: 'First name', value: 'Hassan' },
-                                        { label: 'Last name', value: 'El Abdallah' },
-                                        { label: 'Email', value: 'Hassankh@gmail.com' },
-                                        { label: 'Phone number', value: '533 2222 22 22' },
+                                        { label: 'Username', value: formValues.username, name:'username' },
+                                        { label: 'First name', value: formValues.first_name, name:'first_name'},
+                                        { label: 'Last name', value: formValues.last_name, name:'last_name' },
+                                        { label: 'Email', value: formValues.email, name:'last_name' },
+                                        { label: 'Phone number', value: formValues.phone_number, name:'phone_number' },
                                     ].map((field, index) => (
                                         <React.Fragment key={index}>
                                             <Grid item container xs={12} md={9} lg={9}>
@@ -41,18 +160,29 @@ export default function Profile() {
                                                     label={field.label}
                                                     type="text"
                                                     variant="outlined"
+                                                    name={field.name}
                                                     value={field.value}
+                                                    onChange={handleFormChange}
                                                     style={{ backgroundColor: 'white', borderRadius: 5 }}
                                                     fullWidth
                                                 />
                                             </Grid>
                                             <Grid item container xs={12} md={2} lg={2}>
-                                                <Button size={'large'} fullWidth style={{ backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>
+                                                <Button size={'large'} onClick={()=>{
+                                                   
+                                                    handleValueUpdate(field.name)
+                                                    
+                                                }} fullWidth style={{ backgroundColor: '#004378', color: 'white', textTransform: 'none' }}>
                                                     Update
                                                 </Button>
                                             </Grid>
                                         </React.Fragment>
                                     ))}
+                                    <NotificationMessage
+                                    status={notify.status}
+                                    message= {notify.message}
+                                    setNotify={setNotify}
+                                />
                                 </Grid>
                             </Grid>
                         </Container>
@@ -60,7 +190,7 @@ export default function Profile() {
                     <br></br>
                     <br></br>
                     <CardActions style={{ justifyContent: 'flex-end' }}>
-                        <Button size="large" style={{ backgroundColor: '#1B639E', color: 'white', textTransform: 'none', marginLeft: 'auto' }}>
+                        <Button size="large" onClick={()=>navigate('/auth/password-update/')} style={{ backgroundColor: '#1B639E', color: 'white', textTransform: 'none', marginLeft: 'auto' }}>
                             Change Password
                         </Button>
                         <Button size="large" style={{ backgroundColor: '#901A1A', color: 'white', textTransform: 'none' }}>

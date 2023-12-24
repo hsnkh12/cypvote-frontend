@@ -6,12 +6,18 @@ import { useAuth } from '../../../contexts/auth';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import NotificationMessage from '../../../components/Notification/NotificationMessage';
-
-export default function PhoneNumber(){
+import { useSearchParams } from 'react-router-dom';
+export default function PhoneNumber(props){
 
     const {verifySMSCode, signOut} = useAuth()
 
+    const {setPageNotify} = props
+
     const [ notify, setNotify] = useState({ message: null, status: null})
+    const [searchParams, _] = useSearchParams()
+    const redirectUrl = searchParams.get('redirect')? searchParams.get('redirect'): "/elections/"
+    const new_phone_number = searchParams.get('new_phone_number')
+    const navigate = useNavigate()
 
 
     const [formValues, setFormValues] = useState({
@@ -34,8 +40,11 @@ export default function PhoneNumber(){
 
         try{
         e.preventDefault()
-        await verifySMSCode(formValues.code)
+        await verifySMSCode(formValues.code, redirectUrl, new_phone_number, setPageNotify)
         } catch(err){
+            if (err.response.status === 403) {
+                navigate('/auth/login/?redirect=/auth/profile/&phone_number_change=true')
+            } 
             const message = err.response.data.message? err.response.data.message: "Server error"
             setNotify({message: message, status: 'error'})
         }
@@ -75,7 +84,6 @@ export default function PhoneNumber(){
                                 />
                                 <Grid item xs={12} mt={2}>
                                     <Button type={'submit'}  size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginRight: 5}}>Verify</Button>
-                                    <Button onClick={signOut} size={'large'} style={{ backgroundColor: '#1B639E', width: 150, color: 'white', textTransform: 'none', marginRight: 5}}>Resend</Button>
                                 </Grid>
                             </Grid>
 

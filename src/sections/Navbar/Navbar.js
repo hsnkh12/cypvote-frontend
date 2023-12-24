@@ -13,10 +13,11 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { useNavigate } from 'react-router-dom';
-
+import { useAuth } from '../../contexts/auth';
 
 export default function Navbar() {
 
+  const { signOut } = useAuth()
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -180,15 +181,10 @@ export default function Navbar() {
               <MenuItem onClick={() => navigate("/auth/register/")}>
                 <Typography textAlign="center">Register</Typography>
               </MenuItem>
-              <MenuItem onClick={() => navigate("/auth/logout/")}>
+              <MenuItem onClick={() => signOut()}>
                 <Typography textAlign="center">Logout</Typography>
               </MenuItem>
-              <MenuItem onClick={() => navigate("/auth/phone-number-verify")}>
-                <Typography textAlign="center">phone verify page (temp)</Typography>
-              </MenuItem>
-              <MenuItem onClick={() => navigate("/auth/password-reset")}>
-                <Typography textAlign="center">Password reset page (temp)</Typography>
-              </MenuItem>
+              
             </Menu>
           </Box>
         </Toolbar>

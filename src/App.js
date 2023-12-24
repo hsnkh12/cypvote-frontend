@@ -14,28 +14,41 @@ import { Footer } from './sections/Footer/Footer';
 import PhoneNumber from './screens/Auth/PhoneNumber/PhoneNumber';
 import PasswordReset from './screens/Auth/PasswordReset/PasswordReset';
 import PrivacyPolicy from './screens/PrivacyPolicy/PrivacyPolicy';
-
+import Screen404 from './screens/404/Screen404'
+import ChangePassword from './screens/Auth/ChangePassword/ChangePassword';
+import NotificationMessage from './components/Notification/NotificationMessage';
+import { useState } from 'react';
 function App() {
+
+  const [notify, setNotify] = useState({ message: null, status: null })
   return (
     <div className="App">
       <BrowserRouter>
-      <Navbar></Navbar>
-      <ScrollToTop></ScrollToTop>
-      <Routes>
-        <Route path="/" exact element={<Home> </Home>} />
-        <Route path="/auth/login" exact element={<Signin></Signin>} />
-        <Route path="/auth/register" exact element={<Signup></Signup>} />
-        <Route path="/auth/profile" exact element={<Profile></Profile>} />
-        <Route path="/elections" exact element={<Elections></Elections>} />
-        <Route path="/elections/:election_id" exact element={<ElectionDetail></ElectionDetail>} />
-        <Route path="/candidates" exact element={<Candidates></Candidates>} />
-        <Route path="/candidates/:candidate_id" exact element={<CandidateDetail></CandidateDetail>} />
-        <Route path="/auth/phone-number-verify" exact element={<PhoneNumber></PhoneNumber>} />
-        <Route path="/auth/password-reset" exact element={<PasswordReset></PasswordReset>} />
-        <Route path="/privacy-policy" exact element={<PrivacyPolicy></PrivacyPolicy>} />
-    </Routes>
-    <Footer />
-    </BrowserRouter>
+      <NotificationMessage
+          status={notify.status}
+          message={notify.message}
+          setNotify={setNotify}
+        />
+        <Navbar></Navbar>
+    
+        <ScrollToTop></ScrollToTop>
+        <Routes>
+          <Route path="/" exact element={<Home setPageNotify={setNotify}> </Home>} />
+          <Route path="/auth/login" exact element={<Signin setPageNotify={setNotify}></Signin>} />
+          <Route path="/auth/register" exact element={<Signup setPageNotify={setNotify}></Signup>} />
+          <Route path="/auth/profile" exact element={<Profile setPageNotify={setNotify}></Profile>} />
+          <Route path="/elections" exact element={<Elections setPageNotify={setNotify}></Elections>} />
+          <Route path="/elections/:election_id" exact element={<ElectionDetail setPageNotify={setNotify}></ElectionDetail>} />
+          <Route path="/candidates" exact element={<Candidates setPageNotify={setNotify}></Candidates>} />
+          <Route path="/candidates/:candidate_id" exact element={<CandidateDetail setPageNotify={setNotify}></CandidateDetail>} />
+          <Route path="/auth/phone-number-verify" exact element={<PhoneNumber setPageNotify={setNotify}></PhoneNumber>} />
+          <Route path="/auth/password-reset" exact element={<PasswordReset setPageNotify={setNotify}></PasswordReset>} />
+          <Route path="/auth/password-update" exact element={<ChangePassword setPageNotify={setNotify}></ChangePassword>} />
+          <Route path="/privacy-policy" exact element={<PrivacyPolicy setPageNotify={setNotify}></PrivacyPolicy>} />
+          <Route path="/404" exact element={<Screen404></Screen404>} />
+        </Routes>
+        <Footer />
+      </BrowserRouter>
     </div>
   );
 }

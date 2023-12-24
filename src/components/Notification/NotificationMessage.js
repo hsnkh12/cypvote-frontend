@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
 export default function NotificationMessage(props) {
-  const { message, status, setNotify } = props;
+  const { message, status, setNotify, extraStyle = {} } = props;
 
   const onClose = () => {
     setNotify({ message: null, status: null });
@@ -30,7 +30,8 @@ export default function NotificationMessage(props) {
     padding: '15px',
     margin: '10px',
     borderRadius: '5px',
-    position: 'relative', // To position the close button
+    position: 'relative', // To position the close button,
+    ...extraStyle,
   };
 
   const closeButtonStyle = {
@@ -46,7 +47,7 @@ export default function NotificationMessage(props) {
 
   return (
     <Grid item xs={12}>
-      <div style={notificationStyle}>
+      <div style={{...notificationStyle, color: status==='warning'? 'black': 'white'}}>
         {message}
         <IconButton
           size="small"

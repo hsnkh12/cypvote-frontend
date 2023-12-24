@@ -3,19 +3,22 @@ import Container from '@mui/material/Container'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField';
 import { useAuth } from '../../../contexts/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NotificationMessage from '../../../components/Notification/NotificationMessage';
-
+import { useSearchParams } from 'react-router-dom';
 
 export default function Signin() {
 
-
+    
     const { authenticateUser } = useAuth()
+    const [searchParams, _] = useSearchParams()
     const [ notify, setNotify] = useState({ message: null, status: null})
     const [formValues, setFormValues] = useState({
         email: null,
         password: null
     })
+
+    const redirectUrl = searchParams.get('redirect')? searchParams.get('redirect'): "/elections/"
 
     const handleFormValueChange = (e) => {
         e.preventDefault()
@@ -24,8 +27,7 @@ export default function Signin() {
         const prevFormValues = { ...formValues }
 
         prevFormValues[e.target.name] = value
-
-        setFormValues(prevFormValues)
+        setFormValues(prevFormValues, redirectUrl)
     }
 
     const handleFormSubmit = async (e) => {
@@ -33,7 +35,7 @@ export default function Signin() {
         e.preventDefault()
 
         try {
-            await authenticateUser(formValues)
+            await authenticateUser(formValues, redirectUrl)
         } catch(err) {
 
             const message = err.response.data.message? err.response.data.message: "Server error"
@@ -42,6 +44,7 @@ export default function Signin() {
 
 
     }
+
 
     return (
         <div style={{ backgroundColor: '#004378' }} >
